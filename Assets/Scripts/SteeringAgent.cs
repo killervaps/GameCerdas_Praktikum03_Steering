@@ -2,6 +2,13 @@ using UnityEngine;
 
 public class SteeringAgent : MonoBehaviour
 {
+    public enum BehaviorState
+    {
+        Arrive,
+        Wander,
+        Avoiding
+    }
+
     [Header("Target")]
 
     [SerializeField]
@@ -48,18 +55,51 @@ public class SteeringAgent : MonoBehaviour
     [SerializeField]
     private float avoidanceWeight = 2.5f;
 
+    [Header("Behavior Visualization")]
+
+    [SerializeField]
+    private Renderer bodyRenderer;
+
+    [SerializeField]
+    private Color arriveColor = Color.green;
+
+    [SerializeField]
+    private Color wanderColor = Color.cyan;
+
+    [SerializeField]
+    private Color avoidingColor = Color.red;
+
+    private static readonly int BaseColorId =
+        Shader.PropertyToID("_BaseColor");
+
+    private static readonly int ColorId =
+        Shader.PropertyToID("_Color");
+
     private Vector3 velocity;
 
     private Vector3 wanderDirection;
 
     private float wanderTimer;
 
+    private BehaviorState currentBehavior;
+
+    private MaterialPropertyBlock propertyBlock;
+
     public Vector3 Velocity => velocity;
+
+    public BehaviorState CurrentBehavior => currentBehavior;
 
     private void Start()
     {
         wanderDirection = transform.forward;
         wanderTimer = wanderChangeInterval;
+
+        if (bodyRenderer == null)
+        {
+            bodyRenderer = GetComponentInChildren<Renderer>();
+        }
+
+        propertyBlock = new MaterialPropertyBlock();
     }
 
     private void Update()
@@ -68,15 +108,24 @@ public class SteeringAgent : MonoBehaviour
 
         if (useTarget && target != null)
         {
+            currentBehavior = BehaviorState.Arrive;
             desiredVelocity = CalculateArrive();
         }
         else
         {
+            currentBehavior = BehaviorState.Wander;
             desiredVelocity = CalculateWander();
         }
 
         desiredVelocity =
             ApplyObstacleAvoidance(desiredVelocity);
+
+        if (sensor != null && sensor.ObstacleDetected)
+        {
+            currentBehavior = BehaviorState.Avoiding;
+        }
+
+        UpdateBehaviorColor();
 
         velocity =
             Vector3.MoveTowards(
@@ -201,6 +250,33 @@ public class SteeringAgent : MonoBehaviour
         }
 
         return desiredVelocity;
+    }
+
+    private void UpdateBehaviorColor()
+    {
+        if (bodyRenderer == null)
+        {
+            return;
+        }
+
+        Color color = arriveColor;
+
+        switch (currentBehavior)
+        {
+            case BehaviorState.Wander:
+                color = wanderColor;
+                break;
+            case BehaviorState.Avoiding:
+                color = avoidingColor;
+                break;
+        }
+
+        bodyRenderer.GetPropertyBlock(propertyBlock);
+
+        propertyBlock.SetColor(BaseColorId, color);
+        propertyBlock.SetColor(ColorId, color);
+
+        bodyRenderer.SetPropertyBlock(propertyBlock);
     }
 
     private void ApplyMovement()
