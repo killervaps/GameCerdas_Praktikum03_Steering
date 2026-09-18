@@ -6,6 +6,7 @@ public class SteeringAgent : MonoBehaviour
     {
         Arrive,
         Wander,
+        Flee,
         Avoiding
     }
 
@@ -47,6 +48,17 @@ public class SteeringAgent : MonoBehaviour
     [SerializeField]
     private float wanderAngleChange = 45f;
 
+    [Header("Flee")]
+
+    [SerializeField]
+    private bool fleeEnabled = false;
+
+    [SerializeField]
+    private Transform fleeTarget;
+
+    [SerializeField]
+    private float fleeRadius = 3f;
+
     [Header("Obstacle Avoidance")]
 
     [SerializeField]
@@ -65,6 +77,9 @@ public class SteeringAgent : MonoBehaviour
 
     [SerializeField]
     private Color wanderColor = Color.cyan;
+
+    [SerializeField]
+    private Color fleeColor = Color.yellow;
 
     [SerializeField]
     private Color avoidingColor = Color.red;
@@ -106,7 +121,12 @@ public class SteeringAgent : MonoBehaviour
     {
         Vector3 desiredVelocity;
 
-        if (useTarget && target != null)
+        if (IsFleeTriggered())
+        {
+            currentBehavior = BehaviorState.Flee;
+            desiredVelocity = CalculateFlee();
+        }
+        else if (useTarget && target != null)
         {
             currentBehavior = BehaviorState.Arrive;
             desiredVelocity = CalculateArrive();
@@ -178,6 +198,37 @@ public class SteeringAgent : MonoBehaviour
         }
 
         return toTarget.normalized * desiredSpeed;
+    }
+
+    private bool IsFleeTriggered()
+    {
+        if (!fleeEnabled || fleeTarget == null)
+        {
+            return false;
+        }
+
+        Vector3 fromTarget =
+            transform.position - fleeTarget.position;
+
+        fromTarget.y = 0f;
+
+        return fromTarget.sqrMagnitude <=
+            fleeRadius * fleeRadius;
+    }
+
+    private Vector3 CalculateFlee()
+    {
+        Vector3 fromTarget =
+            transform.position - fleeTarget.position;
+
+        fromTarget.y = 0f;
+
+        if (fromTarget.sqrMagnitude < 0.001f)
+        {
+            fromTarget = transform.forward;
+        }
+
+        return fromTarget.normalized * maxSpeed;
     }
 
     private Vector3 CalculateWander()
@@ -266,6 +317,9 @@ public class SteeringAgent : MonoBehaviour
             case BehaviorState.Wander:
                 color = wanderColor;
                 break;
+            case BehaviorState.Flee:
+                color = fleeColor;
+                break;
             case BehaviorState.Avoiding:
                 color = avoidingColor;
                 break;
@@ -326,6 +380,26 @@ public class SteeringAgent : MonoBehaviour
                 transform.position,
                 target.position
             );
+        }
+
+        if (fleeEnabled)
+        {
+            Gizmos.color = Color.yellow;
+
+            Gizmos.DrawWireSphere(
+                transform.position,
+                fleeRadius
+            );
+
+            Gizmos.color = Color.white;
+
+            if (fleeTarget != null)
+            {
+                Gizmos.DrawLine(
+                    transform.position,
+                    fleeTarget.position
+                );
+            }
         }
     }
 }
