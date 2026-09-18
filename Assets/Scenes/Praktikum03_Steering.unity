@@ -243,7 +243,7 @@ GameObject:
   - component: {fileID: 52321558}
   - component: {fileID: 52321557}
   - component: {fileID: 52321556}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DirectionMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -355,7 +355,8 @@ GameObject:
   - component: {fileID: 114148796}
   - component: {fileID: 114148795}
   - component: {fileID: 114148794}
-  m_Layer: 0
+  - component: {fileID: 114148798}
+  m_Layer: 7
   m_Name: Friendly NPC 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -408,6 +409,12 @@ MonoBehaviour:
   wanderColor: {r: 0, g: 1, b: 1, a: 1}
   fleeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   avoidingColor: {r: 1, g: 0, b: 0, a: 1}
+  separatingColor: {r: 1, g: 0, b: 1, a: 1}
+  agentMask:
+    serializedVersion: 2
+    m_Bits: 128
+  separationRadius: 1.5
+  separationWeight: 1.5
 --- !u!114 &114148796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -443,6 +450,29 @@ Transform:
   - {fileID: 1034189285}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &114148798
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 114148793}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &249724654 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6c58e1dfd8baaf9438c182b900ef99a3, type: 3}
@@ -936,6 +966,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: triple_t
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: dc900b9773f6e37468a550006f7a5091, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -961,7 +995,8 @@ GameObject:
   - component: {fileID: 740182877}
   - component: {fileID: 740182876}
   - component: {fileID: 740182875}
-  m_Layer: 0
+  - component: {fileID: 740182879}
+  m_Layer: 7
   m_Name: Friendly NPC 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1014,6 +1049,12 @@ MonoBehaviour:
   wanderColor: {r: 0, g: 1, b: 1, a: 1}
   fleeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   avoidingColor: {r: 1, g: 0, b: 0, a: 1}
+  separatingColor: {r: 1, g: 0, b: 1, a: 1}
+  agentMask:
+    serializedVersion: 2
+    m_Bits: 128
+  separationRadius: 1.5
+  separationWeight: 1.5
 --- !u!114 &740182877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1049,6 +1090,29 @@ Transform:
   - {fileID: 1465510448}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &740182879
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740182874}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &763815225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1061,7 +1125,7 @@ GameObject:
   - component: {fileID: 763815229}
   - component: {fileID: 763815228}
   - component: {fileID: 763815227}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DirectionMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1228,6 +1292,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: dc900b9773f6e37468a550006f7a5091, type: 3}
       propertyPath: m_Name
       value: triple_t
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: dc900b9773f6e37468a550006f7a5091, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1415,7 +1483,7 @@ GameObject:
   - component: {fileID: 854290366}
   - component: {fileID: 854290365}
   - component: {fileID: 854290364}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DirectionMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1527,7 +1595,7 @@ GameObject:
   - component: {fileID: 881775720}
   - component: {fileID: 881775719}
   - component: {fileID: 881775718}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DirectionMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1694,6 +1762,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: dc900b9773f6e37468a550006f7a5091, type: 3}
       propertyPath: m_Name
       value: triple_t
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: dc900b9773f6e37468a550006f7a5091, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1931,6 +2003,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: dc900b9773f6e37468a550006f7a5091, type: 3}
       propertyPath: m_Name
       value: triple_t
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: dc900b9773f6e37468a550006f7a5091, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2932,7 +3008,8 @@ GameObject:
   - component: {fileID: 2110668471}
   - component: {fileID: 2110668472}
   - component: {fileID: 2110668473}
-  m_Layer: 0
+  - component: {fileID: 2110668474}
+  m_Layer: 7
   m_Name: Friendly NPC 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2967,7 +3044,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5908f069a0880142b496a799227cf1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SteeringSensor
-  sensorDistance: 3
+  sensorDistance: 3.04
   sensorRadius: 0.5
   sensorHeight: 0.5
   obstacleMask:
@@ -3006,6 +3083,12 @@ MonoBehaviour:
   wanderColor: {r: 0, g: 1, b: 1, a: 1}
   fleeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   avoidingColor: {r: 1, g: 0, b: 0, a: 1}
+  separatingColor: {r: 1, g: 0, b: 1, a: 1}
+  agentMask:
+    serializedVersion: 2
+    m_Bits: 128
+  separationRadius: 1.5
+  separationWeight: 1.5
 --- !u!114 &2110668473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3020,6 +3103,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SteeringDebug
   agent: {fileID: 2110668472}
   velocityScale: 1
+--- !u!136 &2110668474
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2110668467}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &2133105912
 GameObject:
   m_ObjectHideFlags: 0
@@ -3144,7 +3250,7 @@ GameObject:
   - component: {fileID: 2135796987}
   - component: {fileID: 2135796986}
   - component: {fileID: 2135796985}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Fleeing NPC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3197,6 +3303,12 @@ MonoBehaviour:
   wanderColor: {r: 0, g: 1, b: 1, a: 1}
   fleeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   avoidingColor: {r: 1, g: 0, b: 0, a: 1}
+  separatingColor: {r: 1, g: 0, b: 1, a: 1}
+  agentMask:
+    serializedVersion: 2
+    m_Bits: 128
+  separationRadius: 1.5
+  separationWeight: 1.5
 --- !u!114 &2135796987
 MonoBehaviour:
   m_ObjectHideFlags: 0

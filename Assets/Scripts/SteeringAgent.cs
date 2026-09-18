@@ -7,6 +7,7 @@ public class SteeringAgent : MonoBehaviour
         Arrive,
         Wander,
         Flee,
+        Separating,
         Avoiding
     }
 
@@ -84,6 +85,20 @@ public class SteeringAgent : MonoBehaviour
     [SerializeField]
     private Color avoidingColor = Color.red;
 
+    [SerializeField]
+    private Color separatingColor = Color.magenta;
+
+    [Header("Separation")]
+
+    [SerializeField]
+    private LayerMask agentMask;
+
+    [SerializeField]
+    private float separationRadius = 1.5f;
+
+    [SerializeField]
+    private float separationWeight = 1.5f;
+
     private static readonly int BaseColorId =
         Shader.PropertyToID("_BaseColor");
 
@@ -97,6 +112,8 @@ public class SteeringAgent : MonoBehaviour
     private float wanderTimer;
 
     private BehaviorState currentBehavior;
+
+    private bool isSeparating;
 
     private MaterialPropertyBlock propertyBlock;
 
@@ -138,7 +155,15 @@ public class SteeringAgent : MonoBehaviour
         }
 
         desiredVelocity =
+            ApplySeparation(desiredVelocity);
+
+        desiredVelocity =
             ApplyObstacleAvoidance(desiredVelocity);
+
+        if (isSeparating)
+        {
+            currentBehavior = BehaviorState.Separating;
+        }
 
         if (sensor != null && sensor.ObstacleDetected)
         {
@@ -259,6 +284,89 @@ public class SteeringAgent : MonoBehaviour
         return wanderDirection * wanderSpeed;
     }
 
+    private Vector3 CalculateSeparation()
+    {
+        Collider[] neighbors =
+            Physics.OverlapSphere(
+                transform.position,
+                separationRadius,
+                agentMask
+            );
+
+        Vector3 separation =
+            Vector3.zero;
+
+        int count = 0;
+
+        foreach (Collider neighbor in neighbors)
+        {
+            SteeringAgent otherAgent =
+                neighbor.GetComponentInParent<SteeringAgent>();
+
+            if (otherAgent == null || otherAgent == this)
+            {
+                continue;
+            }
+
+            Vector3 away =
+                transform.position -
+                otherAgent.transform.position;
+
+            away.y = 0f;
+
+            float sqrDistance =
+                away.sqrMagnitude;
+
+            if (sqrDistance > 0.001f)
+            {
+                separation +=
+                    away.normalized /
+                    Mathf.Max(sqrDistance, 0.01f);
+
+                count++;
+            }
+        }
+
+        if (count > 0)
+        {
+            separation /= count;
+        }
+
+        return separation;
+    }
+
+    private Vector3 ApplySeparation(
+        Vector3 desiredVelocity)
+    {
+        Vector3 separation = CalculateSeparation();
+
+        isSeparating = separation.sqrMagnitude > 0.001f;
+
+        if (!isSeparating)
+        {
+            return desiredVelocity;
+        }
+
+        Vector3 combined =
+            desiredVelocity +
+            separation * separationWeight;
+
+        combined.y = 0f;
+
+        if (combined.sqrMagnitude > 0.001f)
+        {
+            combined.Normalize();
+        }
+
+        float desiredSpeed =
+            Mathf.Max(
+                desiredVelocity.magnitude,
+                wanderSpeed
+            );
+
+        return combined * desiredSpeed;
+    }
+
     private Vector3 ApplyObstacleAvoidance(
         Vector3 desiredVelocity)
     {
@@ -319,6 +427,9 @@ public class SteeringAgent : MonoBehaviour
                 break;
             case BehaviorState.Flee:
                 color = fleeColor;
+                break;
+            case BehaviorState.Separating:
+                color = separatingColor;
                 break;
             case BehaviorState.Avoiding:
                 color = avoidingColor;
@@ -401,5 +512,12 @@ public class SteeringAgent : MonoBehaviour
                 );
             }
         }
+
+        Gizmos.color = Color.magenta;
+
+        Gizmos.DrawWireSphere(
+            transform.position,
+            separationRadius
+        );
     }
 }
