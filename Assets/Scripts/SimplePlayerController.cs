@@ -11,6 +11,8 @@ public class SimplePlayerController : MonoBehaviour
 
     private CharacterController controller;
 
+    public Vector3 Velocity => controller.velocity;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();

@@ -7,6 +7,7 @@ public class SteeringAgent : MonoBehaviour
         Arrive,
         Wander,
         Flee,
+        Pursue,
         Separating,
         Avoiding
     }
@@ -60,6 +61,17 @@ public class SteeringAgent : MonoBehaviour
     [SerializeField]
     private float fleeRadius = 3f;
 
+    [Header("Pursue")]
+
+    [SerializeField]
+    private bool pursueEnabled = false;
+
+    [SerializeField]
+    private SimplePlayerController pursueTarget;
+
+    [SerializeField]
+    private float maxPredictionTime = 1.5f;
+
     [Header("Obstacle Avoidance")]
 
     [SerializeField]
@@ -81,6 +93,9 @@ public class SteeringAgent : MonoBehaviour
 
     [SerializeField]
     private Color fleeColor = Color.yellow;
+
+    [SerializeField]
+    private Color pursueColor = new Color(1f, 0.5f, 0f);
 
     [SerializeField]
     private Color avoidingColor = Color.red;
@@ -143,6 +158,11 @@ public class SteeringAgent : MonoBehaviour
             currentBehavior = BehaviorState.Flee;
             desiredVelocity = CalculateFlee();
         }
+        else if (pursueEnabled && pursueTarget != null)
+        {
+            currentBehavior = BehaviorState.Pursue;
+            desiredVelocity = CalculatePursue();
+        }
         else if (useTarget && target != null)
         {
             currentBehavior = BehaviorState.Arrive;
@@ -192,8 +212,35 @@ public class SteeringAgent : MonoBehaviour
 
     private Vector3 CalculateArrive()
     {
+        return ArriveToward(target.position);
+    }
+
+    private Vector3 GetPursuePredictedPosition()
+    {
         Vector3 toTarget =
-            target.position - transform.position;
+            pursueTarget.transform.position - transform.position;
+
+        toTarget.y = 0f;
+
+        float predictionTime =
+            Mathf.Min(
+                toTarget.magnitude / Mathf.Max(maxSpeed, 0.001f),
+                maxPredictionTime
+            );
+
+        return pursueTarget.transform.position +
+            pursueTarget.Velocity * predictionTime;
+    }
+
+    private Vector3 CalculatePursue()
+    {
+        return ArriveToward(GetPursuePredictedPosition());
+    }
+
+    private Vector3 ArriveToward(Vector3 targetPosition)
+    {
+        Vector3 toTarget =
+            targetPosition - transform.position;
 
         toTarget.y = 0f;
 
@@ -428,6 +475,9 @@ public class SteeringAgent : MonoBehaviour
             case BehaviorState.Flee:
                 color = fleeColor;
                 break;
+            case BehaviorState.Pursue:
+                color = pursueColor;
+                break;
             case BehaviorState.Separating:
                 color = separatingColor;
                 break;
@@ -511,6 +561,23 @@ public class SteeringAgent : MonoBehaviour
                     fleeTarget.position
                 );
             }
+        }
+
+        if (pursueEnabled && pursueTarget != null)
+        {
+            Vector3 predicted = GetPursuePredictedPosition();
+
+            Gizmos.color = pursueColor;
+
+            Gizmos.DrawLine(
+                transform.position,
+                predicted
+            );
+
+            Gizmos.DrawWireSphere(
+                predicted,
+                0.3f
+            );
         }
 
         Gizmos.color = Color.magenta;
